@@ -21,7 +21,11 @@ public class FingerDelay : MonoBehaviour
     [Tooltip("Exclude wrist rotation (recommended).")]
     public bool keepWristRealtime = true;
 
-    struct Sample { public Quaternion rot; public float time; }
+    struct Sample
+    {
+        public Quaternion rot;
+        public float time;
+    }
 
     private readonly List<Transform> bones = new List<Transform>();
     private readonly Dictionary<Transform, Queue<Sample>> buffers = new Dictionary<Transform, Queue<Sample>>();
@@ -41,13 +45,12 @@ public class FingerDelay : MonoBehaviour
 
         if (!visualWristRoot) return;
 
-        // Collect all transforms under wrist (including wrist)
         var all = visualWristRoot.GetComponentsInChildren<Transform>(true);
 
         foreach (var t in all)
         {
             if (!t) continue;
-            if (keepWristRealtime && t == visualWristRoot) continue; // skip wrist
+            if (keepWristRealtime && t == visualWristRoot) continue;
 
             bones.Add(t);
             buffers[t] = new Queue<Sample>(64);
@@ -61,14 +64,10 @@ public class FingerDelay : MonoBehaviour
 
         float now = Time.time;
 
-        // IMPORTANT:
-        // This script must run AFTER the system updates the hand visualizer,
-        // so the current bone rotations represent the real tracked pose for this frame.
         foreach (var b in bones)
         {
             if (!b) continue;
 
-            // current tracked pose (for this frame) is what we read right now
             Quaternion trackedRot = b.rotation;
 
             if (useLatency)
@@ -76,7 +75,6 @@ public class FingerDelay : MonoBehaviour
                 var q = buffers[b];
                 q.Enqueue(new Sample { rot = trackedRot, time = now });
 
-                // pop samples older than delay; the last popped becomes the applied delayed pose
                 Quaternion applied = trackedRot;
                 bool hasOld = false;
 
@@ -86,7 +84,6 @@ public class FingerDelay : MonoBehaviour
                     hasOld = true;
                 }
 
-                // If we don't have enough history yet, just follow tracking (prevents startup weirdness)
                 b.rotation = hasOld ? applied : trackedRot;
 
                 while (q.Count > 120) q.Dequeue();
@@ -97,6 +94,17 @@ public class FingerDelay : MonoBehaviour
                 dampRot[b] = Quaternion.Slerp(dampRot[b], trackedRot, t);
                 b.rotation = dampRot[b];
             }
+        }
+    }
+
+    // -------------------------
+    // TRIGGER TOGGLE
+    // -------------------------
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Button-Toggle"))
+        {
+            effectOn = !effectOn;
         }
     }
 }
