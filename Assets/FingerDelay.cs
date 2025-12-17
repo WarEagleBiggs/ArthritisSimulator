@@ -3,37 +3,73 @@ using UnityEngine;
 
 public class FingerDelay : MonoBehaviour
 {
+    // -------------------------
+    // SHARED STATE (both hands)
+    // -------------------------
+    public static bool SharedEffectOn = true;
+
     [Header("Assign the wrist/root bone of the visual hand (e.g., L_Wrist / R_Wrist)")]
     public Transform visualWristRoot;
 
-    [Header("Settings")]
-    public bool effectOn = true;
+    [Header("Button Press Detection (no triggers)")]
+    public Transform fingerTip;
+    public Collider buttonCollider;
+    public bool autoFindButtonByTag = true;
+    public float insideEpsilon = 0.001f;
 
-    [Tooltip("True = visible delay. False = dampening.")]
+    [Header("Local override")]
+    [Tooltip("If true, this instance uses SharedEffectOn. If false, uses effectOnLocal only.")]
+    public bool syncWithOtherHand = true;
+
+    [Tooltip("Only used when syncWithOtherHand = false.")]
+    public bool effectOnLocal = true;
+
+    [Header("Settings")]
     public bool useLatency = true;
 
     [Range(0f, 1f)]
     public float latencySeconds = 0.35f;
 
-    [Tooltip("Only used when useLatency = false. Smaller = more sluggish.")]
     public float dampStrength = 3f;
-
-    [Tooltip("Exclude wrist rotation (recommended).")]
     public bool keepWristRealtime = true;
 
-    struct Sample
-    {
-        public Quaternion rot;
-        public float time;
-    }
+    struct Sample { public Quaternion rot; public float time; }
 
     private readonly List<Transform> bones = new List<Transform>();
     private readonly Dictionary<Transform, Queue<Sample>> buffers = new Dictionary<Transform, Queue<Sample>>();
     private readonly Dictionary<Transform, Quaternion> dampRot = new Dictionary<Transform, Quaternion>();
 
+    private bool wasInsideButton = false;
+
+    bool EffectOn
+    {
+        get => syncWithOtherHand ? SharedEffectOn : effectOnLocal;
+        set
+        {
+            if (syncWithOtherHand) SharedEffectOn = value;
+            else effectOnLocal = value;
+        }
+    }
+
     void Awake()
     {
         RebuildBoneList();
+        TryAutoFindButton();
+    }
+
+    void OnEnable()
+    {
+        TryAutoFindButton();
+        wasInsideButton = false;
+    }
+
+    void TryAutoFindButton()
+    {
+        if (buttonCollider) return;
+        if (!autoFindButtonByTag) return;
+
+        var go = GameObject.FindGameObjectWithTag("button-toggle");
+        if (go) buttonCollider = go.GetComponent<Collider>();
     }
 
     [ContextMenu("Rebuild Bone List")]
@@ -58,9 +94,31 @@ public class FingerDelay : MonoBehaviour
         }
     }
 
+    void Update()
+    {
+        // Press detection (no triggers)
+        if (!fingerTip) return;
+
+        if (!buttonCollider) TryAutoFindButton();
+        if (!buttonCollider) return;
+
+        Vector3 p = fingerTip.position;
+
+        Vector3 cp = buttonCollider.ClosestPoint(p);
+        bool isInside = (cp - p).sqrMagnitude <= insideEpsilon * insideEpsilon;
+
+        // Edge detect: outside -> inside toggles once
+        if (isInside && !wasInsideButton)
+        {
+            EffectOn = !EffectOn; // toggles shared if syncWithOtherHand = true
+        }
+
+        wasInsideButton = isInside;
+    }
+
     void LateUpdate()
     {
-        if (!effectOn || !visualWristRoot) return;
+        if (!EffectOn || !visualWristRoot) return;
 
         float now = Time.time;
 
@@ -94,17 +152,6 @@ public class FingerDelay : MonoBehaviour
                 dampRot[b] = Quaternion.Slerp(dampRot[b], trackedRot, t);
                 b.rotation = dampRot[b];
             }
-        }
-    }
-
-    // -------------------------
-    // TRIGGER TOGGLE
-    // -------------------------
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Button-Toggle"))
-        {
-            effectOn = !effectOn;
         }
     }
 }

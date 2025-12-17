@@ -583,6 +583,11 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 4145983475151517603, guid: 8dac5800910ba114e9fa922053b05476, type: 3}
+--- !u!4 &237257875 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4750108363859694709, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+  m_PrefabInstance: {fileID: 3001774293689589082}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &248358149 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6484816944661230505, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
@@ -1155,6 +1160,11 @@ Transform:
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7158865763779469689, guid: 66d40221d132d04499855da9ce315f20, type: 3}
   m_PrefabInstance: {fileID: 1364055689}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &542175626 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5623248194768087441, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+  m_PrefabInstance: {fileID: 3001774293689589082}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &593050027 stripped
 GameObject:
@@ -3548,6 +3558,11 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     m_Variable: {fileID: 0}
+--- !u!4 &1853959438 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 485106867588348800, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+  m_PrefabInstance: {fileID: 3001774293689589082}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1891673207 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7800413991915503276, guid: 69eb4eecbd2100a408ab74fc543b405c, type: 3}
@@ -3725,6 +3740,34 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &1921151564 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5130931824654361083, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+  m_PrefabInstance: {fileID: 3001774293689589082}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1921151570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1921151564}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f10f6e7bb11def46ae236873ea62282, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualWristRoot: {fileID: 542175626}
+  fingerTip: {fileID: 237257875}
+  buttonCollider: {fileID: 609161140}
+  autoFindButtonByTag: 1
+  insideEpsilon: 0.001
+  syncWithOtherHand: 1
+  effectOnLocal: 1
+  useLatency: 1
+  latencySeconds: 0.073
+  dampStrength: 3
+  keepWristRealtime: 1
 --- !u!1 &1981993638 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9152363913774390056, guid: 8dac5800910ba114e9fa922053b05476, type: 3}
@@ -4236,6 +4279,10 @@ PrefabInstance:
       propertyPath: m_Handedness
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5130931824654361083, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 6391579207171690961, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
       propertyPath: m_RootOrder
       value: 2
@@ -4280,6 +4327,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7396295131783951970, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
     - target: {fileID: 8661785788637795077, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
       propertyPath: m_EnableFarCasting
       value: 0
@@ -4355,6 +4406,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7396295131783951970, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
       insertIndex: 1
       addedObject: {fileID: 3001774293689589085}
+    - targetCorrespondingSourceObject: {fileID: 5130931824654361083, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
+      insertIndex: 1
+      addedObject: {fileID: 1921151570}
   m_SourcePrefab: {fileID: 100100000, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
 --- !u!1 &3001774293689589083 stripped
 GameObject:
@@ -4379,7 +4433,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   visualWristRoot: {fileID: 3001774293689589084}
-  effectOn: 1
+  fingerTip: {fileID: 1853959438}
+  buttonCollider: {fileID: 609161140}
+  autoFindButtonByTag: 1
+  insideEpsilon: 0.001
+  syncWithOtherHand: 1
+  effectOnLocal: 1
   useLatency: 1
   latencySeconds: 0.073
   dampStrength: 3
